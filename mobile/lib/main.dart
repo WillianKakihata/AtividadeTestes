@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/src/Diario/Diario.service.dart';
 import 'package:mobile/src/Diario/Entrada.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const DiarioApp());
@@ -29,12 +30,13 @@ class DiarioHomePage extends StatefulWidget {
 }
 
 class _DiarioHomePageState extends State<DiarioHomePage> {
-  final DiarioService _diarioService = DiarioService();
+  late DiarioService _diarioService;
   late Future<List<Entrada>> _entradas;
 
   @override
   void initState() {
     super.initState();
+    _diarioService = DiarioService(client: http.Client());
     _entradas = _diarioService.obterEntradas();
   }
 
@@ -64,9 +66,7 @@ class _DiarioHomePageState extends State<DiarioHomePage> {
               return ListTile(
                 title: Text(entrada.titulo),
                 subtitle: Text(entrada.data),
-                onTap: () {
-                  // Ação para visualizar detalhes ou editar
-                },
+                onTap: () {},
               );
             },
           );
@@ -112,7 +112,7 @@ class _DiarioHomePageState extends State<DiarioHomePage> {
             TextButton(
               onPressed: () async {
                 final novaEntrada = Entrada(
-                  id: 0,  
+                  id: 0,
                   data: DateTime.now().toString(),
                   titulo: tituloController.text,
                   conteudo: conteudoController.text,
